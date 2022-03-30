@@ -10,6 +10,7 @@ import { User } from './user.entity';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
+  // creating user
   async creatUser(authCredentials: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentials;
     // gen a salt

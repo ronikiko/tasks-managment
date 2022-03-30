@@ -19,11 +19,6 @@ import { PassportModule } from '@nestjs/passport';
       synchronize: true,
     }),
     AuthModule,
-    JwtModule.register({
-      secret: 'secret123',
-      signOptions: { expiresIn: '60s' },
-    }),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
 })
 export class AppModule {}
