@@ -1,4 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
+import { User } from 'src/auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
@@ -8,10 +9,10 @@ import { TaskStatus } from './task.status.enum';
 @EntityRepository(Task)
 export class TasksRepository extends Repository<Task> {
   // get all tasks
-  async getAllTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+  async getAllTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
-
     const query = this.createQueryBuilder('task');
+    query.where({ user });
 
     if (status) {
       query.andWhere('task.status = :status', { status });
@@ -49,8 +50,8 @@ export class TasksRepository extends Repository<Task> {
   }
 
   // delete task
-  async deleteTask(id: string): Promise<void> {
-    const task = await this.delete(id);
+  async deleteTask(id: string, user: User): Promise<void> {
+    const task = await this.delete({ id, user });
     if (task.affected === 0) {
       throw new NotFoundException(`Task with id ${id} not found`);
     }
